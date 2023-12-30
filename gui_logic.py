@@ -2,12 +2,11 @@ from PyQt5.QtWidgets import QVBoxLayout
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
-from ard import ArduinoController
+from arduino_logic import ArduinoController
 from gui import Ui_Dialog
 
 reducer = 63.68395
 steps_in_the_degree = ((32 * reducer) / 360) / 4 * 3.5
-print(f"steps_in_the_degree = {steps_in_the_degree}")
 angle = 0
 
 
@@ -15,86 +14,105 @@ def speed(delay_of_steps):
     return 1 / (4 * steps_in_the_degree * delay_of_steps / 1000)
 
 
-def on_box_angle_changed(value):
-    print(f"QBox: {value}")
-
-
 class GuiProgram(Ui_Dialog, ArduinoController):
     def __init__(self, dialog):
         Ui_Dialog.__init__(self)
         self.setupUi(dialog)
+        layout = QVBoxLayout()
+        # QTWidget
+        self.widget.setLayout(layout)
+        # QTButton
         self.port_update.clicked.connect(self.connect_arduino)
-        self.dial.valueChanged.connect(self.on_dial_changed)
-        self.angle_box.valueChanged.connect(on_box_angle_changed)
-        self.speed_rotation_box.valueChanged.connect(self.on_box_speed_rotation_changed)
         self.rotate_button.clicked.connect(self.connect_rotate)
+        # QTLabel
         self.label_now_speed.setText(f"Скорость: {speed(self.speed_rotation_box.value()) // 0.0001 / 10000} град./сек.")
         self.label_angle_all.setText(f"Скорость: {angle} град.")
-        layout = QVBoxLayout()
-        self.widget.setLayout(layout)
+        # QTDial
+        self.dial.valueChanged.connect(self.on_dial_changed)
+        # QTBar
+        self.speed_rotation_box.valueChanged.connect(self.on_box_speed_rotation_changed)
+
+        # Параметры графика в QTWidget
         self.canvas = FigureCanvasQTAgg(Figure())
         layout.addWidget(self.canvas)
+        self.fig = self.canvas.figure
+        self.ax = self.fig.add_subplot(111)
 
     def create_graph(self, mass, start_angle, end_angle):
-        fig = self.canvas.figure
-        fig.clear()
-        ax = fig.add_subplot(111)
-        ax.set_xlim(start_angle, end_angle)
-        title = "Значения с датчика"
-        ax.set_title(title)
-        ax.set_xlabel("Измерение")
-        ax.set_ylabel("Значение, у.е.")
-        im = ax.plot(list(range(len(mass))), mass)
+        # Очищаем виджет, в котором будем рисовать график
+        self.fig.clear()
+        # Устанавливаем значения угла по оси X
+        self.ax.set_xlim(start_angle, end_angle)
+        # Устанавливаем название осей и самого графика
+        self.ax.set_title("Значения с датчика")
+        self.ax.set_xlabel("Измерение")
+        self.ax.set_ylabel("Значение, у.е.")
+        # Создаем график
+        im = self.ax.plot(list(range(len(mass))), mass)
+        # Рисуем график
         self.canvas.draw()
 
+    # сли мы поворачиваем QTDial (крутилку), то...
     def on_dial_changed(self, value):
-        print(f"QDial: {value}")  # Обновление данных в твоем приложении
+        print(f"QDial: {value}")  # Обновление данных в приложении
+        # Изменяем значения QTBar с коэффициентами скорости
         self.angle_box.setValue(value)
 
+    # Если мы изменяем значения в QTBar с коэффициентом скорости поворота, то...
     def on_box_speed_rotation_changed(self, value):
+        # Изменяем значения в текстовом виджете со значением скорости поворота
         self.label_now_speed.setText(f"Скорость: {speed(value) // 0.0001 / 10000} град./сек.")
 
+    # Действие, при нажатии кнопки подключения к Arduino
     def connect_arduino(self):
+        # Записываем Serial-порт и скорость передачи данных в переменные класса Arduino
         ArduinoController.serial_port = self.box_com.currentText()
         ArduinoController.baud_rate = int(self.speed_box.currentText())
-        print(ArduinoController.serial_port, ArduinoController.baud_rate)
+        # Если мы смогли подключиться к Arduino, то делаем доступными для пользователя виджеты для поворота системы
         if ArduinoController.connect(self):
             self.switch_enabled()
 
     def connect_rotate(self):
+        # Подключаем глобальную переменную хранящую угол относительно нулевого угла
         global angle
+        # Выставляем прогресс-бар в нулевое положение
         self.progressBar.setValue(0)
-        ArduinoController.send_data(self, f"{self.angle_box.value()}\n")
-        ArduinoController.send_data(self, f"{self.speed_rotation_box.value()}\n")
+        # Отправляем команду на Arduino, которая запускает поворот на некий угол с определенной скоростью
+        ArduinoController.send_data(self, f"{self.angle_box.value()}\n{self.speed_rotation_box.value()}\n")
+        # Создаем массив, в который будем записывать измерения с датчика
         mass = []
+        # Переменная для подсчета количества выполненных измерений
         count = 0
+        # Записываем в переменную входные данные из консоли Arduino
         tmp = ArduinoController.receive_data(self)
+        # Читаем консоль до момента, когда не подойдет конец, то есть не выведется символ "е"
         while "e" not in tmp:
             count += 1
+            # Добавляем новое измерение с датчика
             mass.append(float(tmp))
-            print(int(count * 100 / (steps_in_the_degree * abs(self.angle_box.value()))))
+            # Обновляем прогресс-бар
             self.progressBar.setValue(int(count * 100 / (steps_in_the_degree * abs(self.angle_box.value()))))
+            # Записываем следующие значение измерения
             tmp = ArduinoController.receive_data(self)
-
-        print(f"count = {count}")
-
-        print(mass, min(angle, angle + self.angle_box.value()), max(angle, angle + self.angle_box.value()))
+        print(mass)
+        # Выводим график значений измерений от угла поворота
         self.create_graph(mass, angle, angle + self.angle_box.value())
-        mass = []
+        # Обновляем значение абсолютного угла поворота
         angle += self.angle_box.value()
-        self.label_angle_all.setText(f"Скорость: {angle} град.")
+        # Изменяем значение абсолютного в приложении
+        self.label_angle_all.setText(f"Угол: {angle} град.")
 
+    # Делает недоступными для редактирования элементы после подключения к Arduino, которые отвечают за подключение.
+    # И делает активными те, которые управляют поворотом.
     def switch_enabled(self):
-        self.angle_box.setEnabled(False if self.angle_box.isEnabled() else True)
-        self.label_com.setEnabled(False if self.label_com.isEnabled() else True)
-        self.label_angle.setEnabled(False if self.label_angle.isEnabled() else True)
-        self.dial.setEnabled(False if self.dial.isEnabled() else True)
-        self.rotate_button.setEnabled(False if self.rotate_button.isEnabled() else True)
-        self.box_com.setEnabled(False if self.box_com.isEnabled() else True)
-        self.speed_box.setEnabled(False if self.speed_box.isEnabled() else True)
-        self.label_speed.setEnabled(False if self.label_speed.isEnabled() else True)
-        self.label_speed_rotation.setEnabled(False if self.label_speed_rotation.isEnabled() else True)
-        self.speed_rotation_box.setEnabled(False if self.speed_rotation_box.isEnabled() else True)
-        self.label_now_speed.setEnabled(False if self.label_now_speed.isEnabled() else True)
-        self.progressBar.setEnabled(False if self.progressBar.isEnabled() else True)
-        self.label_angle_all.setEnabled(False if self.label_angle_all.isEnabled() else True)
+        # Записываем все элементы, которые должны будут менять режимы доступности в массив
+        widgets = [
+            self.angle_box, self.label_com, self.label_angle, self.dial,
+            self.rotate_button, self.box_com, self.speed_box,
+            self.label_speed, self.label_speed_rotation, self.speed_rotation_box,
+            self.label_now_speed, self.progressBar, self.label_angle_all
+        ]
+        # Перебираем каждый элемент (виджет) и меняем его состояние
+        for widget in widgets:
+            widget.setEnabled(not widget.isEnabled())
+
