@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>807</width>
+    <height>546</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_com">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>COM-порт</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="box_com">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <item>
+          <property name="text">
+           <string>COM1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>COM10</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_speed">
+         <property name="text">
+          <string>Cкорость передачи данных</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="speed_box">
+         <property name="currentText">
+          <string>300</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>300</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>600</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1200</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2400</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>4800</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9600</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>14400</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>19200</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>28800</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>38400</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>57600</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>115200</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="port_update">
+       <property name="text">
+        <string>Обновить COM-порт</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_angle">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Угол</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="angle_box">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>-1000000</number>
+         </property>
+         <property name="maximum">
+          <number>1000000</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QDial" name="dial">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimum">
+        <number>-360</number>
+       </property>
+       <property name="maximum">
+        <number>360</number>
+       </property>
+       <property name="singleStep">
+        <number>5</number>
+       </property>
+       <property name="pageStep">
+        <number>0</number>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+       <property name="sliderPosition">
+        <number>0</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_speed_rotation">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Коэффицент скорости</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="speed_rotation_box">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>2</number>
+         </property>
+         <property name="maximum">
+          <number>20</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_now_speed">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Скорость: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_angle_all">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Угол: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="rotate_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Поворот</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
