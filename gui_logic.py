@@ -36,11 +36,12 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         self.canvas = FigureCanvasQTAgg(Figure())
         layout.addWidget(self.canvas)
         self.fig = self.canvas.figure
+        self.fig.clear()
         self.ax = self.fig.add_subplot(111)
 
     def create_graph(self, mass, start_angle, end_angle):
         # Очищаем виджет, в котором будем рисовать график
-        self.fig.clear()
+        self.ax.clear()
         # Устанавливаем значения угла по оси X
         self.ax.set_xlim(start_angle, end_angle)
         # Устанавливаем название осей и самого графика
