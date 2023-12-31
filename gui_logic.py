@@ -1,3 +1,7 @@
+import asyncio
+import concurrent.futures
+import tracemalloc
+
 from PyQt5.QtWidgets import QVBoxLayout
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -8,10 +12,16 @@ from gui import Ui_Dialog
 reducer = 63.68395
 steps_in_the_degree = ((32 * reducer) / 360) / 4 * 3.5
 angle = 0
+tracemalloc.start()
 
 
 def speed(delay_of_steps):
     return 1 / (4 * steps_in_the_degree * delay_of_steps / 1000)
+
+
+async def run_with_threadpool_executor(func, *args):
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        await asyncio.get_event_loop().run_in_executor(pool, func, *args)
 
 
 class GuiProgram(Ui_Dialog, ArduinoController):
@@ -39,17 +49,17 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         self.fig.clear()
         self.ax = self.fig.add_subplot(111)
 
-    def create_graph(self, mass, start_angle, end_angle):
+    async def create_graph(self, mass, start_angle, end_angle):
         # Очищаем виджет, в котором будем рисовать график
         self.ax.clear()
         # Устанавливаем значения угла по оси X
-        self.ax.set_xlim(start_angle, end_angle)
+        # self.ax.set_xlim(start_angle, end_angle)
         # Устанавливаем название осей и самого графика
         self.ax.set_title("Значения с датчика")
         self.ax.set_xlabel("Измерение")
         self.ax.set_ylabel("Значение, у.е.")
         # Создаем график
-        im = self.ax.plot(list(range(len(mass))), mass)
+        im = self.ax.plot(mass)
         # Рисуем график
         self.canvas.draw()
 
@@ -95,9 +105,12 @@ class GuiProgram(Ui_Dialog, ArduinoController):
             self.progressBar.setValue(int(count * 100 / (steps_in_the_degree * abs(self.angle_box.value()))))
             # Записываем следующие значение измерения
             tmp = ArduinoController.receive_data(self)
+            if count % int(0.5 * steps_in_the_degree * self.angle_box.value()) == 0:
+                asyncio.run(self.create_graph(mass, angle, angle + self.angle_box.value()))
+            
         print(mass)
         # Выводим график значений измерений от угла поворота
-        self.create_graph(mass, angle, angle + self.angle_box.value())
+        asyncio.run(self.create_graph(mass, angle, angle + self.angle_box.value()))
         # Обновляем значение абсолютного угла поворота
         angle += self.angle_box.value()
         # Изменяем значение абсолютного в приложении
