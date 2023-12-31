@@ -49,17 +49,17 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         self.fig.clear()
         self.ax = self.fig.add_subplot(111)
 
-    async def create_graph(self, mass, start_angle, end_angle):
+    async def create_graph(self, mass):
         # Очищаем виджет, в котором будем рисовать график
         self.ax.clear()
         # Устанавливаем значения угла по оси X
-        # self.ax.set_xlim(start_angle, end_angle)
+        # ...
         # Устанавливаем название осей и самого графика
         self.ax.set_title("Значения с датчика")
         self.ax.set_xlabel("Измерение")
         self.ax.set_ylabel("Значение, у.е.")
         # Создаем график
-        im = self.ax.plot(mass)
+        self.ax.plot(mass)
         # Рисуем график
         self.canvas.draw()
 
@@ -76,7 +76,7 @@ class GuiProgram(Ui_Dialog, ArduinoController):
 
     # Действие, при нажатии кнопки подключения к Arduino
     def connect_arduino(self):
-        # Записываем Serial-порт и скорость передачи данных в переменные класса Arduino
+        # Записываем Serial-порт и скорость передачи данных в переменные в классе Arduino
         ArduinoController.serial_port = self.box_com.currentText()
         ArduinoController.baud_rate = int(self.speed_box.currentText())
         # Если мы смогли подключиться к Arduino, то делаем доступными для пользователя виджеты для поворота системы
@@ -106,11 +106,11 @@ class GuiProgram(Ui_Dialog, ArduinoController):
             # Записываем следующие значение измерения
             tmp = ArduinoController.receive_data(self)
             if count % int(0.5 * steps_in_the_degree * self.angle_box.value()) == 0:
-                asyncio.run(self.create_graph(mass, angle, angle + self.angle_box.value()))
+                asyncio.run(self.create_graph(mass))
             
         print(mass)
         # Выводим график значений измерений от угла поворота
-        asyncio.run(self.create_graph(mass, angle, angle + self.angle_box.value()))
+        asyncio.run(self.create_graph(mass))
         # Обновляем значение абсолютного угла поворота
         angle += self.angle_box.value()
         # Изменяем значение абсолютного в приложении
@@ -129,4 +129,3 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         # Перебираем каждый элемент (виджет) и меняем его состояние
         for widget in widgets:
             widget.setEnabled(not widget.isEnabled())
-
