@@ -34,9 +34,10 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         # QTButton
         self.port_update.clicked.connect(self.connect_arduino)
         self.rotate_button.clicked.connect(self.connect_rotate)
+        self.zero_button.clicked.connect(lambda: self.label_angle_all.setText("Угол: 0 град."))
         # QTLabel
         self.label_now_speed.setText(f"Скорость: {speed(self.speed_rotation_box.value()) // 0.0001 / 10000} град./сек.")
-        self.label_angle_all.setText(f"Скорость: {angle} град.")
+        self.label_angle_all.setText(f"Угол: {angle} град.")
         # QTDial
         self.dial.valueChanged.connect(self.on_dial_changed)
         # QTBar
@@ -124,7 +125,7 @@ class GuiProgram(Ui_Dialog, ArduinoController):
             self.angle_box, self.label_com, self.label_angle, self.dial,
             self.rotate_button, self.box_com, self.speed_box,
             self.label_speed, self.label_speed_rotation, self.speed_rotation_box,
-            self.label_now_speed, self.progressBar, self.label_angle_all
+            self.label_now_speed, self.progressBar, self.label_angle_all, self.zero_button
         ]
         # Перебираем каждый элемент (виджет) и меняем его состояние
         for widget in widgets:
