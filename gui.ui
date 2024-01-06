@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>807</width>
-    <height>546</height>
+    <width>1242</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
        <item>
         <widget class="QLabel" name="label_com">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -34,7 +34,7 @@
        <item>
         <widget class="QComboBox" name="box_com">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -191,6 +191,12 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Угол</string>
          </property>
@@ -200,6 +206,12 @@
         <widget class="QSpinBox" name="angle_box">
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="minimum">
           <number>-1000000</number>
@@ -258,6 +270,12 @@
         <widget class="QSpinBox" name="speed_rotation_box">
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="minimum">
           <number>2</number>
@@ -347,17 +365,206 @@
     </layout>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QWidget" name="widget" native="true">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_cos">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="locale">
+        <locale language="Russian" country="Russia"/>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="text">
+        <string>Уравнение квадратного косинуса (Закон Малюса):     I(φ) = I_0 * cos ^ 2 (φ / k + s) + C</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button_create_cos">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Построить</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_I_0">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>I_0: 0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="slider_I_0">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_k">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>k: 0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="slider_k">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>500</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_C">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>C: 0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="slider_C">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximum">
+            <number>150</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QLabel" name="label_s">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>s: 0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="slider_s">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="minimum">
+            <number>-50</number>
+           </property>
+           <property name="maximum">
+            <number>50</number>
+           </property>
+           <property name="pageStep">
+            <number>1</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

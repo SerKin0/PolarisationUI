@@ -39,7 +39,7 @@ class ArduinoController:
     def receive_data(self):
         if self.ser:
             incoming_data = self.ser.readline()
-            print(f"Получены данные от Arduino: {incoming_data.decode('utf-8').strip()}")
+            # print(f"Получены данные от Arduino: {incoming_data.decode('utf-8').strip()}")
             return incoming_data.decode('utf-8').strip()
         else:
             print("Нет активного соединения для получения данных.")
