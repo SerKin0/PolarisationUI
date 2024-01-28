@@ -29,10 +29,18 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         Ui_Dialog.__init__(self)
         self.setupUi(dialog)
         layout = QVBoxLayout()
+        
+        # Параметры / Переменные
+        self.I_0 = 0
+        self.k = 1
+        self.C = 0
+        self.s = 0
+        self.data = []  # Array with measurements from the sensor
+        self.angle = 0  # The total angle of rotation
+
         # QTWidget
         self.widget.setLayout(layout)
         self.canvas = FigureCanvasQTAgg(Figure())
-        # layout.addToolBar(NavigationToolbar(self.canvas, self))
         # QTButton
         self.port_update.clicked.connect(self.connect_arduino)
         self.rotate_button.clicked.connect(self.connect_rotate)
@@ -65,14 +73,6 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         self.ax.set_title("Значения с датчика")
         self.ax.set_xlabel("Измерение")
         self.ax.set_ylabel("Значение, у.е.")
-
-        # Параметры / Переменные
-        self.I_0 = 0
-        self.k = 1
-        self.C = 0
-        self.s = 0
-        self.data = []  # Array with measurements from the sensor
-        self.angle = 0  # The total angle of rotation
 
     def changed_I_0(self, value: int) -> None:
         """Changing the amplitude intensity parameter (I_0)
