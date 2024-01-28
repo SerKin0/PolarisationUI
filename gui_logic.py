@@ -1,6 +1,5 @@
 import asyncio
 import concurrent.futures
-import tracemalloc
 
 import numpy as np
 from PyQt5.QtWidgets import QVBoxLayout
@@ -10,26 +9,19 @@ from matplotlib.figure import Figure
 from arduino_logic import ArduinoController
 from gui import Ui_Dialog
 
-reducer = 63.68395
-steps_in_the_degree = ((32 * reducer) / 360) / 4 * 3.5
-angle = 0
-tracemalloc.start()
+steps_in_the_degree = ((32 * 63.68395) / 360) / 4 * 3.5
 count_draw_graph = 3
-I_0 = 0
-k = 1
-C = 0
-s = 0
-# Создаем массив, в который будем записывать измерения с датчика
-data = []
 
+def speed(delay_of_steps: int) -> float:
+    """Calculates the speed of rotation of the step engine in (deg/sec)
 
-def speed(delay_of_steps):
+    Args:
+        delay_of_steps (int): The delay between the turn
+
+    Returns:
+        float: Turning speed in hail/sec.
+    """
     return 1 / (4 * steps_in_the_degree * delay_of_steps / 1000)
-
-
-async def run_with_threadpool_executor(func, *args):
-    with concurrent.futures.ThreadPoolExecutor() as pool:
-        await asyncio.get_event_loop().run_in_executor(pool, func, *args)
 
 
 class GuiProgram(Ui_Dialog, ArduinoController):
@@ -48,10 +40,10 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         self.button_create_cos.clicked.connect(self.create_graph_Malusa)
         # QTLabel
         self.label_now_speed.setText(f"Скорость: {speed(self.speed_rotation_box.value()) // 0.0001 / 10000} град./сек.")
-        self.label_angle_all.setText(f"Угол: {angle} град.")
-        self.label_I_0.setText(f"I_0: {I_0}")
-        self.label_k.setText(f"k: {k}")
-        self.label_C.setText(f"C: {C}")
+        self.label_angle_all.setText(f"Угол: {self.angle} град.")
+        self.label_I_0.setText(f"I_0: {self.I_0}")
+        self.label_k.setText(f"k: {self.k}")
+        self.label_C.setText(f"C: {self.C}")
         # QTDial
         self.dial.valueChanged.connect(self.on_dial_changed)
         # QTBar
@@ -74,34 +66,59 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         self.ax.set_xlabel("Измерение")
         self.ax.set_ylabel("Значение, у.е.")
 
-    def changed_I_0(self, value):
-        global I_0
+        # Параметры / Переменные
+        self.I_0 = 0
+        self.k = 1
+        self.C = 0
+        self.s = 0
+        self.data = []  # Array with measurements from the sensor
+        self.angle = 0  # The total angle of rotation
+
+    def changed_I_0(self, value: int) -> None:
+        """Changing the amplitude intensity parameter (I_0)
+
+        Args:
+            value (int): Value from the widget
+        """
         self.label_I_0.setText(f"I_0: {value}")
-        I_0 = value
+        self.I_0 = value
         self.create_graph_Malusa()
 
-    def changed_C(self, value):
-        global C
+    def changed_C(self, value: int) -> None:
+        """Changing the parameter for adjusting the theoretical graph on the Y axis (С)
+
+        Args:
+            value (int): Value from the widget
+        """
         self.label_C.setText(f"C: {value}")
-        C = value
+        self.C = value
         self.create_graph_Malusa()
 
-    def changed_k(self, value):
-        global k
+    def changed_k(self, value: int) -> None:
+        """Changing the parameter of the oscillation period (k)
+
+        Args:
+            value (int): Value from the widget
+        """
         self.label_k.setText(f"k: {value}")
-        k = value
+        self.k = value
         self.create_graph_Malusa()
 
-    def changed_s(self, value):
-        global s
+    def changed_s(self, value: int) -> None:
+        """Changing the parameter for displacement along the X (s) axis
+
+        Args:
+            value (int): Values from the widget
+        """
         self.label_s.setText(f"s: {value}")
-        s = value
+        self.s = value
         self.create_graph_Malusa()
 
-    def create_graph_Malusa(self):
-        if data:
-            x = np.arange(len(data))
-            y = np.real(I_0 * np.cos(x / k + (s / 10)) ** 2 + C)
+    def create_graph_Malusa(self) -> None:
+        """ Bringing the theoretical graph on the equation of Malyus """
+        if self.data:
+            x = np.arange(len(self.data))
+            y = np.real(self.I_0 * np.cos(x / self.k + (self.s / 10)) ** 2 + self.C)
 
             if self.line_cos:
                 self.line_cos.set_ydata(y)
@@ -111,22 +128,22 @@ class GuiProgram(Ui_Dialog, ArduinoController):
 
             self.canvas.draw()
 
-    async def create_graph(self):
+    async def create_graph(self) -> None:
+        """ Draw a data schedule from the sensor"""
         # Очищаем виджет, в котором будем рисовать график
         self.ax.clear()
-        # Устанавливаем значения угла по оси X
-        # ...
         # Устанавливаем название осей и самого графика
         self.ax.set_title("Значения с датчика")
         self.ax.set_xlabel("Измерение")
         self.ax.set_ylabel("Значение, у.е.")
         # Создаем график
-        self.ax.plot(data, color='blue', label='Реальный график')
+        self.ax.plot(self.data, color='blue', label='Реальный график')
         # Рисуем график
         self.canvas.draw()
 
-    # сли мы поворачиваем QTDial (крутилку), то...
-    def on_dial_changed(self, value):
+    # Если мы поворачиваем QTDial (крутилку), то...
+    def on_dial_changed(self, value: int) -> None:
+
         print(f"QDial: {value}")  # Обновление данных в приложении
         # Изменяем значения QTBar с коэффициентами скорости
         self.angle_box.setValue(value)
@@ -136,8 +153,8 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         # Изменяем значения в текстовом виджете со значением скорости поворота
         self.label_now_speed.setText(f"Скорость: {speed(value) // 0.0001 / 10000} град./сек.")
 
-    # Действие, при нажатии кнопки подключения к Arduino
-    def connect_arduino(self):
+    def connect_arduino(self) -> None:
+        """Действие, при нажатии кнопки подключения к Arduino """
         # Записываем Serial-порт и скорость передачи данных в переменные в классе Arduino
         ArduinoController.serial_port = self.box_com.currentText()
         ArduinoController.baud_rate = int(self.speed_box.currentText())
@@ -146,13 +163,11 @@ class GuiProgram(Ui_Dialog, ArduinoController):
             self.switch_enabled()
 
     def connect_rotate(self):
-        # Подключаем глобальную переменную хранящую угол относительно нулевого угла
-        global angle, data
         # Выставляем прогресс-бар в нулевое положение
         self.progressBar.setValue(0)
         # Отправляем команду на Arduino, которая запускает поворот на некий угол с определенной скоростью
         ArduinoController.send_data(self, f"{self.angle_box.value()}\n{self.speed_rotation_box.value()}\n")
-        data = []
+        self.data = []
         # Переменная для подсчета количества выполненных измерений
         count = 0
         # Записываем в переменную входные данные из консоли Arduino
@@ -161,7 +176,7 @@ class GuiProgram(Ui_Dialog, ArduinoController):
         while "e" not in tmp:
             count += 1
             # Добавляем новое измерение с датчика
-            data.append(float(tmp))
+            self.data.append(float(tmp))
             # Обновляем прогресс-бар
             self.progressBar.setValue(int(count * 100 / (steps_in_the_degree * abs(self.angle_box.value()))))
             # Записываем следующие значение измерения
@@ -169,18 +184,18 @@ class GuiProgram(Ui_Dialog, ArduinoController):
             if count % int(steps_in_the_degree * self.angle_box.value() / count_draw_graph) == 0:
                 asyncio.run(self.create_graph())
 
-        print(data)
+        print(self.data)
         # Выводим график значений измерений от угла поворота
         asyncio.run(self.create_graph())
         # Обновляем значение абсолютного угла поворота
-        angle += self.angle_box.value()
+        self.angle += self.angle_box.value()
         # Изменяем значение абсолютного в приложении
-        self.label_angle_all.setText(f"Угол: {angle} град.")
+        self.label_angle_all.setText(f"Угол: {self.angle} град.")
 
-    # Делает недоступными для редактирования элементы после подключения к Arduino, которые отвечают за подключение.
-    # И делает активными те, которые управляют поворотом.
-    def switch_enabled(self):
-        # Записываем все элементы, которые должны будут менять режимы доступности в массив
+    def switch_enabled(self) -> None:
+        """After connecting to the Arduino board, the connection buttons become inaccessible to rarefaction, and measurement widgets, on the contrary
+        """
+        # We write down all the elements that will have to change accessories in the array
         widgets = [
             self.angle_box, self.label_com, self.label_angle, self.dial,
             self.rotate_button, self.box_com, self.speed_box,

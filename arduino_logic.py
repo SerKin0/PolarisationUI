@@ -8,26 +8,31 @@ class ArduinoController:
         self.baud_rate = baud_rate
         self.ser = None
 
-    def connect(self):
+    def connect(self) -> bool:
+        """Connection of the ARDUINO board
+
+        Returns:
+            bool: Returns the connection status
+        """
         try:
-            # self.disconnect()
             # Устанавливаем соединение с Arduino
             self.ser = serial.Serial(self.serial_port, self.baud_rate)
-            print(f"p = {self.ser.isOpen()}")
-            print(f"Успешно подключено к {self.serial_port} на скорости {self.baud_rate}")
+            print(f"Successfully connected to {self.serial_port} at speed {self.baud_rate}")
+
             return True
         except serial.SerialException:
             QMessageBox.warning(None, "Порт не найден",
                                 "Ошибка подключения. Проверьте порт и скорость передачи данных.")
-            print("Ошибка подключения. Проверьте порт и скорость передачи данных.")
+            print("Connection error.Check the port and data transfer speed.")
+
             return False
 
     def disconnect(self):
         if not self.ser.isOpen():
             self.ser.close()
-            print("Соединение с Arduino разорвано.")
+            print("The connection with Arduino is torn.")
         else:
-            print("Нет активного соединения для разрыва.")
+            print("There is no active connection for the gap.")
 
     def send_data(self, data):
         if self.ser:

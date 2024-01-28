@@ -454,7 +454,10 @@
             <bool>false</bool>
            </property>
            <property name="maximum">
-            <number>100</number>
+            <number>200</number>
+           </property>
+           <property name="singleStep">
+            <number>5</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -487,7 +490,10 @@
             <number>1</number>
            </property>
            <property name="maximum">
-            <number>500</number>
+            <number>700</number>
+           </property>
+           <property name="singleStep">
+            <number>10</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -517,7 +523,10 @@
             <bool>false</bool>
            </property>
            <property name="maximum">
-            <number>150</number>
+            <number>300</number>
+           </property>
+           <property name="singleStep">
+            <number>10</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -551,6 +560,9 @@
            </property>
            <property name="maximum">
             <number>50</number>
+           </property>
+           <property name="singleStep">
+            <number>5</number>
            </property>
            <property name="pageStep">
             <number>1</number>
